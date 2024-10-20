@@ -1,0 +1,29 @@
+name: ci-ssh
+
+on:
+    push:
+        branches:
+            '*'
+ 
+jobs:
+    ci-ssh:
+        runs-on: self-hosted
+        steps:
+            - name: deploy
+              env:
+                SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+                SSH_PRIVATEKEY: ${{ secrets.SSH_PRIVATEKEY }}
+              run: |
+                mkdir actions-runner && cd actions-runner
+                curl -o actions-runner-linux-x64-2.320.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.320.0/actions-runner-linux-x64-2.320.0.tar.gz
+                echo "93ac1b7ce743ee85b5d386f5c1787385ef07b3d7c728ff66ce0d3813d5f46900  actions-runner-linux-x64-2.320.0.tar.gz" | shasum -a 256 -c
+                tar xzf ./actions-runner-linux-x64-2.320.0.tar.gz
+                ./config.sh --url https://github.com/thatabdullah/github-actions-self-hosted --token BLRPUTNX35UR2JH66RKG6F3HCVEDQ
+                ./run.sh
+
+            # 1-Create a folder
+            # 2-Download the latest runner package
+            # 3- Optional: Validate the hash
+            # 4-Extract the installer
+            # 5-Create the runner and start the configuration experience
+            # 6- Last step, run it!
